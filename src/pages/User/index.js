@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ActivityIndicator } from 'react-native';
+import { WebView } from 'react-native-webview';
 import PropTypes from 'prop-types';
 import api from '../../services/api';
 
@@ -74,13 +75,15 @@ export default class User extends Component {
               keyExtractor={star => String(star.id)}
               onEndReached={this.handleEndReached}
               renderItem={({ item }) => (
-                <Starred>
-                  <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
-                  <Info>
-                    <Title>{item.name}</Title>
-                    <Author>{item.owner.login}</Author>
-                  </Info>
-                </Starred>
+                <WebView source={{ uri: item.url }}>
+                  <Starred>
+                    <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
+                    <Info>
+                      <Title>{item.name}</Title>
+                      <Author>{item.owner.login}</Author>
+                    </Info>
+                  </Starred>
+                </WebView>
               )}
             />
           )}
