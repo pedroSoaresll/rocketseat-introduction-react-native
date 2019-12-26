@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, Linking, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
 import PropTypes from 'prop-types';
 import api from '../../services/api';
@@ -51,6 +51,12 @@ export default class User extends Component {
     return api.get(`/users/${user.login}/starred?page=${page}`);
   };
 
+  handleLoadInBrowser = ({ html_url }) => {
+    Linking.canOpenURL(html_url)
+      .then(() => Linking.openURL(html_url))
+      .catch(err => console.tron.error('error to open external link', err));
+  };
+
   render() {
     const { navigation } = this.props;
     const { stars, loading } = this.state;
@@ -75,7 +81,7 @@ export default class User extends Component {
               keyExtractor={star => String(star.id)}
               onEndReached={this.handleEndReached}
               renderItem={({ item }) => (
-                <WebView source={{ uri: item.url }}>
+                <TouchableOpacity onPress={() => this.handleLoadInBrowser(item)}>
                   <Starred>
                     <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
                     <Info>
@@ -83,7 +89,7 @@ export default class User extends Component {
                       <Author>{item.owner.login}</Author>
                     </Info>
                   </Starred>
-                </WebView>
+                </TouchableOpacity>
               )}
             />
           )}
